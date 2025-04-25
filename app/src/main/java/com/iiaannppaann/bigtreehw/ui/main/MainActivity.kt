@@ -1,4 +1,4 @@
-package com.iiaannppaann.bigtreehw
+package com.iiaannppaann.bigtreehw.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
