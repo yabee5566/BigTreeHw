@@ -24,31 +24,18 @@ import androidx.compose.ui.unit.dp
 import com.iiaannppaann.bigtreehw.ui.main.model.StockListItemUiModel
 
 @Composable
-fun MainRoute(modifier: Modifier = Modifier) {
-    val dummyStockList =
-        List(20) {
-            StockListItemUiModel(
-                stockId = "233$it",
-                stockName = "台積電",
-                openingPrice = 1f,
-                closingPrice = 2f,
-                highPrice = 3f,
-                lowPrice = 4f,
-                priceChange = 5f,
-                avgMonthlyPrice = 6f,
-                tradeCount = 7f,
-                volume = 8f,
-                totalValueTraded = 9f,
-            )
-        }
+fun MainRoute(
+    uiState: MainMviUiState,
+    modifier: Modifier = Modifier,
+) {
     MainScreen(
-        stockList = dummyStockList,
         modifier = modifier,
+        stockList = uiState.stockListItemUiModelList,
     )
 }
 
 @Composable
-fun MainScreen(
+private fun MainScreen(
     stockList: List<StockListItemUiModel>,
     modifier: Modifier = Modifier,
 ) {

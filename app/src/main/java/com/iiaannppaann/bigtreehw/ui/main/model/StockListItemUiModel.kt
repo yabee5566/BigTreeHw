@@ -1,6 +1,8 @@
 package com.iiaannppaann.bigtreehw.ui.main.model
 
-// TODO: check if the type is applicable for stock data, too short? or too long?
+import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
+
+// TODO: use String and color for ui model rather than numbers
 data class StockListItemUiModel(
     val stockId: String,
     val stockName: String,
@@ -14,3 +16,18 @@ data class StockListItemUiModel(
     val volume: Float,
     val totalValueTraded: Float,
 )
+
+fun StockListItemDomainModel.toStockListItemUiModel(): StockListItemUiModel =
+    StockListItemUiModel(
+        stockId = stockId,
+        stockName = stockName,
+        openingPrice = openingPrice ?: 0f,
+        closingPrice = closingPrice ?: 0f,
+        highPrice = highestPrice ?: 0f,
+        lowPrice = lowestPrice ?: 0f,
+        priceChange = priceChange ?: 0f,
+        avgMonthlyPrice = avgMonthlyPrice ?: 0f,
+        tradeCount = tradeCount?.toFloat() ?: 0F,
+        volume = volume?.toFloat() ?: 0f,
+        totalValueTraded = totalValueTraded?.toFloat() ?: 0f,
+    )
