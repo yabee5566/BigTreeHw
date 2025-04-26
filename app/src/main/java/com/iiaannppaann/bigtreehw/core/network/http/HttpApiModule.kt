@@ -2,6 +2,7 @@ package com.iiaannppaann.bigtreehw.core.network.http
 
 import android.content.Context
 import com.iiaannppaann.bigtreehw.R
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,10 +19,11 @@ object HttpApiModule {
     @Singleton
     fun provideRetrofit(
         @ApplicationContext context: Context,
+        moshi: Moshi,
     ): Retrofit =
         Retrofit
             .Builder()
             .baseUrl(context.getString(R.string.base_url))
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
 }

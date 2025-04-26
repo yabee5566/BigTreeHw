@@ -12,19 +12,19 @@ data class StockDayTradeInfoData(
     @Json(name = "Name")
     val name: String,
     @Json(name = "TradeVolume")
-    val tradeVolume: String,
+    val tradeVolume: Long,
     @Json(name = "TradeValue")
-    val tradeValue: String,
+    val tradeValue: Long,
     @Json(name = "OpeningPrice")
-    val openingPrice: String,
+    val openingPrice: Float,
     @Json(name = "HighestPrice")
-    val highestPrice: String,
+    val highestPrice: Float,
     @Json(name = "LowestPrice")
-    val lowestPrice: String,
+    val lowestPrice: Float,
     @Json(name = "ClosingPrice")
-    val closingPrice: String,
+    val closingPrice: Float,
     @Json(name = "Change")
-    val change: String,
+    val change: Float,
     @Json(name = "Transaction")
-    val transaction: String,
+    val transaction: Long,
 )

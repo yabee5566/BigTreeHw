@@ -12,7 +12,7 @@ data class StockClosingPriceAndMonthlyAvgData(
     @Json(name = "Name")
     val name: String,
     @Json(name = "ClosingPrice")
-    val closingPrice: String,
+    val closingPrice: Float,
     @Json(name = "MonthlyAveragePrice")
-    val monthlyAveragePrice: String,
+    val monthlyAveragePrice: Float,
 )

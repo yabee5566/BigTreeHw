@@ -12,9 +12,9 @@ data class StockPEPBDividendYieldData(
     @Json(name = "Name")
     val name: String,
     @Json(name = "PEratio")
-    val peRatio: String,
+    val peRatio: Float,
     @Json(name = "DividendYield")
-    val dividendYield: String,
+    val dividendYield: Float,
     @Json(name = "PBratio")
     val pbRatio: String,
 )
