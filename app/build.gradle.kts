@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.moshi.converter)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.kotlinx.collections.immutable)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
