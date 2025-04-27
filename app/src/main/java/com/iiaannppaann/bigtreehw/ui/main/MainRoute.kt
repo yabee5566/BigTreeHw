@@ -138,9 +138,11 @@ private fun StockItem(
                 modifier = Modifier.fillMaxWidth(),
                 openingPrice = uiModel.openingPrice,
                 closingPrice = uiModel.closingPrice,
+                closingPriceColor = uiModel.closingPriceColor,
                 highPrice = uiModel.highPrice,
                 lowPrice = uiModel.lowPrice,
                 priceChange = uiModel.priceChange,
+                priceChangeColor = uiModel.priceChangeColor,
                 avgMonthlyPrice = uiModel.avgMonthlyPrice,
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -158,9 +160,11 @@ private fun StockItem(
 private fun StockItemCenterBlock(
     openingPrice: Float,
     closingPrice: Float,
+    closingPriceColor: Color,
     highPrice: Float,
     lowPrice: Float,
     priceChange: Float,
+    priceChangeColor: Color,
     avgMonthlyPrice: Float,
     modifier: Modifier = Modifier,
 ) {
@@ -175,7 +179,7 @@ private fun StockItemCenterBlock(
             }
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "收盤價:")
-                Text(text = "$closingPrice")
+                Text(text = "$closingPrice", color = closingPriceColor)
             }
         }
         Row {
@@ -191,7 +195,7 @@ private fun StockItemCenterBlock(
         Row {
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "漲跌價差:")
-                Text(text = "$priceChange")
+                Text(text = "$priceChange", color = priceChangeColor)
             }
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "月平均價:")
@@ -392,7 +396,8 @@ private fun StockItemCenterBlockPreview() {
             lowPrice = 4f,
             priceChange = 5f,
             avgMonthlyPrice = 6f,
-            modifier = Modifier,
+            closingPriceColor = Color.Red,
+            priceChangeColor = Color.Green,
         )
     }
 }
@@ -414,6 +419,8 @@ private fun StockItemPreview() {
             tradeCount = 7f,
             volume = 8f,
             totalValueTraded = 9f,
+            closingPriceColor = Color.Red,
+            priceChangeColor = Color.Green,
         ),
     )
 }
@@ -435,6 +442,8 @@ private fun MainScreenPreview() {
                 tradeCount = 7f,
                 volume = 8f,
                 totalValueTraded = 9f,
+                closingPriceColor = Color.Red,
+                priceChangeColor = Color.Green,
             )
         }.toPersistentList()
     MainScreen(
