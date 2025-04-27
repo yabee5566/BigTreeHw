@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.junit.jupiter)
     ktlint(libs.compose.rules.plugin)
     ksp(libs.hilt.android.compiler)
     ksp(libs.moshi.codegen)

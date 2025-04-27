@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
@@ -158,14 +160,14 @@ private fun StockItem(
 
 @Composable
 private fun StockItemCenterBlock(
-    openingPrice: Float,
-    closingPrice: Float,
+    openingPrice: String,
+    closingPrice: String,
     closingPriceColor: Color,
-    highPrice: Float,
-    lowPrice: Float,
-    priceChange: Float,
+    highPrice: String,
+    lowPrice: String,
+    priceChange: String,
     priceChangeColor: Color,
-    avgMonthlyPrice: Float,
+    avgMonthlyPrice: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -175,31 +177,31 @@ private fun StockItemCenterBlock(
         Row {
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "開盤價:")
-                Text(text = "$openingPrice")
+                Text(text = openingPrice)
             }
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "收盤價:")
-                Text(text = "$closingPrice", color = closingPriceColor)
+                Text(text = closingPrice, color = closingPriceColor)
             }
         }
         Row {
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "最高價:")
-                Text(text = "$highPrice")
+                Text(text = highPrice)
             }
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "最低價:")
-                Text(text = "$lowPrice")
+                Text(text = lowPrice)
             }
         }
         Row {
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "漲跌價差:")
-                Text(text = "$priceChange", color = priceChangeColor)
+                Text(text = priceChange, color = priceChangeColor)
             }
             Row(modifier = Modifier.weight(1f)) {
                 Text(text = "月平均價:")
-                Text(text = "$avgMonthlyPrice")
+                Text(text = avgMonthlyPrice)
             }
         }
     }
@@ -207,36 +209,23 @@ private fun StockItemCenterBlock(
 
 @Composable
 private fun StockItemBottomBlock(
-    tradeCount: Float,
-    volume: Float,
-    totalTradeValue: Float,
+    tradeCount: String,
+    volume: String,
+    totalTradeValue: String,
     modifier: Modifier = Modifier,
 ) {
+    val scrollState = rememberScrollState()
     Row(
-        modifier = modifier,
+        modifier = modifier.horizontalScroll(scrollState),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = CenterVertically,
-        ) {
-            Text(text = "成交筆數:")
-            Text(text = "$tradeCount")
-        }
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = CenterVertically,
-        ) {
-            Text(text = "成交股數:")
-            Text(text = "$volume")
-        }
-        Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = CenterVertically,
-        ) {
-            Text(text = "成交金額:")
-            Text(text = "$totalTradeValue")
-        }
+        Text(text = "成交筆數:")
+        Text(text = tradeCount)
+        Text(text = "成交股數:")
+        Text(text = volume)
+        Text(text = "成交金額:")
+        Text(text = totalTradeValue)
     }
 }
 
@@ -377,9 +366,9 @@ private fun ErrorDialog(
 private fun StockItemBottomBlockPreview() {
     StockItemBottomBlock(
         modifier = Modifier.background(Color.White),
-        tradeCount = 1f,
-        volume = 2f,
-        totalTradeValue = 3f,
+        tradeCount = "11K",
+        volume = "22M",
+        totalTradeValue = "123",
     )
 }
 
@@ -390,12 +379,12 @@ private fun StockItemCenterBlockPreview() {
         modifier = Modifier.background(Color.White),
     ) {
         StockItemCenterBlock(
-            openingPrice = 1f,
-            closingPrice = 2f,
-            highPrice = 3f,
-            lowPrice = 4f,
-            priceChange = 5f,
-            avgMonthlyPrice = 6f,
+            openingPrice = "11.22",
+            closingPrice = "11.22",
+            highPrice = "11.22",
+            lowPrice = "11.22",
+            priceChange = "11.22",
+            avgMonthlyPrice = "11.22",
             closingPriceColor = Color.Red,
             priceChangeColor = Color.Green,
         )
@@ -410,15 +399,15 @@ private fun StockItemPreview() {
         StockListItemUiModel(
             stockId = "2330",
             stockName = "台積電",
-            openingPrice = 1f,
-            closingPrice = 2f,
-            highPrice = 3f,
-            lowPrice = 4f,
-            priceChange = 5f,
-            avgMonthlyPrice = 6f,
-            tradeCount = 7f,
-            volume = 8f,
-            totalValueTraded = 9f,
+            openingPrice = "11.22",
+            closingPrice = "11.22",
+            highPrice = "11.22",
+            lowPrice = "11.22",
+            priceChange = "11.22",
+            avgMonthlyPrice = "11.22",
+            tradeCount = "---",
+            volume = "---",
+            totalValueTraded = "1M",
             closingPriceColor = Color.Red,
             priceChangeColor = Color.Green,
         ),
@@ -433,15 +422,15 @@ private fun MainScreenPreview() {
             StockListItemUiModel(
                 stockId = "233$it",
                 stockName = "台積電",
-                openingPrice = 1f,
-                closingPrice = 2f,
-                highPrice = 3f,
-                lowPrice = 4f,
-                priceChange = 5f,
-                avgMonthlyPrice = 6f,
-                tradeCount = 7f,
-                volume = 8f,
-                totalValueTraded = 9f,
+                openingPrice = "11.22",
+                closingPrice = "11.22",
+                highPrice = "11.22",
+                lowPrice = "11.22",
+                priceChange = "11.22",
+                avgMonthlyPrice = "11.22",
+                tradeCount = "---",
+                volume = "1K",
+                totalValueTraded = "1M",
                 closingPriceColor = Color.Red,
                 priceChangeColor = Color.Green,
             )

@@ -2,37 +2,42 @@ package com.iiaannppaann.bigtreehw.ui.main.model
 
 import androidx.compose.ui.graphics.Color
 import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
+import com.iiaannppaann.bigtreehw.ui.main.model.StockListItemUiModel.Companion.NO_DATA_DISPLAY_TEXT
+import java.util.Locale
 
-// TODO: use String and color for ui model rather than numbers
 data class StockListItemUiModel(
     val stockId: String,
     val stockName: String,
-    val openingPrice: Float,
-    val closingPrice: Float,
+    val openingPrice: String,
+    val closingPrice: String,
     val closingPriceColor: Color,
-    val highPrice: Float,
-    val lowPrice: Float,
-    val priceChange: Float,
+    val highPrice: String,
+    val lowPrice: String,
+    val priceChange: String,
     val priceChangeColor: Color,
-    val avgMonthlyPrice: Float,
-    val tradeCount: Float,
-    val volume: Float,
-    val totalValueTraded: Float,
-)
+    val avgMonthlyPrice: String,
+    val tradeCount: String,
+    val volume: String,
+    val totalValueTraded: String,
+) {
+    companion object {
+        const val NO_DATA_DISPLAY_TEXT = "----"
+    }
+}
 
 fun StockListItemDomainModel.toUiModel(): StockListItemUiModel =
     StockListItemUiModel(
         stockId = stockId,
         stockName = stockName,
-        openingPrice = openingPrice ?: 0f,
-        closingPrice = closingPrice ?: 0f,
-        highPrice = highestPrice ?: 0f,
-        lowPrice = lowestPrice ?: 0f,
-        priceChange = priceChange ?: 0f,
-        avgMonthlyPrice = avgMonthlyPrice ?: 0f,
-        tradeCount = tradeCount?.toFloat() ?: 0F,
-        volume = volume?.toFloat() ?: 0f,
-        totalValueTraded = totalValueTraded?.toFloat() ?: 0f,
+        openingPrice = openingPrice?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        closingPrice = closingPrice?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        highPrice = highestPrice?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        lowPrice = lowestPrice?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        priceChange = priceChange?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        avgMonthlyPrice = avgMonthlyPrice?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        tradeCount = tradeCount?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        volume = volume?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
+        totalValueTraded = totalValueTraded?.toFormattedString() ?: NO_DATA_DISPLAY_TEXT,
         closingPriceColor = when {
             (closingPrice == null || avgMonthlyPrice == null) -> Color.Gray
             closingPrice > avgMonthlyPrice -> Color.Red
@@ -46,3 +51,20 @@ fun StockListItemDomainModel.toUiModel(): StockListItemUiModel =
             else -> Color.Gray
         },
     )
+
+fun Long.toFormattedString(): String =
+    when {
+        this > 1_000_000 -> {
+            String.format(locale = Locale.US, format = "%.2fM", this / 1_000_000f)
+        }
+
+        this > 1_000 -> {
+            String.format(locale = Locale.US, format = "%.2fK", this / 1_000f)
+        }
+
+        else -> {
+            this.toString()
+        }
+    }
+
+fun Float.toFormattedString(): String = String.format(Locale.US, "%.2f", this)
