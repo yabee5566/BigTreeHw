@@ -12,6 +12,7 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -21,10 +22,10 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val exceptionHandler =
-        CoroutineExceptionHandler { _, exception ->
-            Log.d("MainViewModel", "Error occurred in ViewModel:$exception")
-        }
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        _uiState.update { it.copy(loading = false) }
+        Log.d("MainViewModel", "Error occurred in ViewModel:$exception")
+    }
 
     init {
         viewModelScope.launch(exceptionHandler) {
@@ -47,9 +48,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun onTopBurgerClick() {
-        _uiState.value = _uiState.value.copy(
-            currentDialog = MainDialog.StockSortOrderBottomSheet,
-        )
+        _uiState.update {
+            it.copy(currentDialog = MainDialog.StockSortOrderBottomSheet)
+        }
     }
 
     private fun onDialogDismiss() {
@@ -61,14 +62,17 @@ class MainViewModel @Inject constructor(
             if (_uiState.value.isStockListAscOrder == isAscOrder) {
                 return@launch
             }
-
+            _uiState.update { it.copy(loading = true) }
             val stockListItemUiModelList = stockInfoRepo
                 .getStockInfoDomainModelList(isSortAsc = isAscOrder)
                 .map(StockListItemDomainModel::toStockListItemUiModel)
                 .toPersistentList()
-            _uiState.value = _uiState.value.copy(
-                stockListItemUiModelList = stockListItemUiModelList,
-            )
+            _uiState.update {
+                it.copy(
+                    stockListItemUiModelList = stockListItemUiModelList,
+                    loading = false
+                )
+            }
         }
     }
 

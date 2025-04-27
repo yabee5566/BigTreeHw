@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -22,6 +24,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +48,7 @@ fun MainRoute(
         modifier = modifier,
         stockList = uiState.stockListItemUiModelList,
         currentDialog = uiState.currentDialog,
+        loading = uiState.loading,
         onStockItemClick = { stockId ->
             onAction(MainUiAction.OnStockItemClick(stockId = stockId))
         },
@@ -62,6 +66,7 @@ fun MainRoute(
 private fun MainScreen(
     currentDialog: MainDialog?,
     stockList: ImmutableList<StockListItemUiModel>,
+    loading: Boolean,
     onStockItemClick: (stockId: String) -> Unit,
     onStockSortOrderClick: (isAscOrder: Boolean) -> Unit,
     onDialogDismiss: () -> Unit,
@@ -123,6 +128,13 @@ private fun MainScreen(
                     textAlign = TextAlign.Center,
                 )
             }
+        }
+        if (loading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(58.dp)
+                    .align(Center)
+            )
         }
     }
 }
@@ -312,9 +324,10 @@ private fun MainScreenPreview() {
         }.toPersistentList()
     MainScreen(
         stockList = dummyStockList,
+        loading = false,
+        currentDialog = null,
         onStockItemClick = {},
         onStockSortOrderClick = {},
-        currentDialog = null,
         onDialogDismiss = {},
     )
 }

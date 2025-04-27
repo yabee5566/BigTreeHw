@@ -5,6 +5,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 data class MainUiState(
+    val loading: Boolean = false,
     val isStockListAscOrder: Boolean = true,
     val stockListItemUiModelList: ImmutableList<StockListItemUiModel> = persistentListOf(),
     val currentDialog: MainDialog? = null,
