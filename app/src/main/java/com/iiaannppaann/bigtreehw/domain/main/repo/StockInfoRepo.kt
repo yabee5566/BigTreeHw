@@ -1,6 +1,5 @@
 package com.iiaannppaann.bigtreehw.domain.main.repo
 
-import android.util.Log
 import com.iiaannppaann.bigtreehw.data.api.ExchangeReportApi
 import com.iiaannppaann.bigtreehw.domain.main.model.StockDetailInfoDomainData
 import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
@@ -52,10 +51,8 @@ class StockInfoRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getStockDetailInfoDomainData(stockId: String): StockDetailInfoDomainData? {
-        return exchangeReportApi
+    override suspend fun getStockDetailInfoDomainData(stockId: String): StockDetailInfoDomainData? = exchangeReportApi
             .getAllStockPEPBAndDividendYield()
             .firstOrNull { it.code == stockId }
             ?.toDomainModel()
-    }
 }

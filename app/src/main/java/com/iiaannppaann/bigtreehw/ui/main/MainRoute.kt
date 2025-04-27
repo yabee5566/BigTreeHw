@@ -1,5 +1,6 @@
 package com.iiaannppaann.bigtreehw.ui.main
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -105,7 +106,12 @@ private fun MainScreen(
                 onDialogDismiss = onDialogDismiss,
             )
         }
-
+        (currentDialog as? MainDialog.ErrorDialog)?.msgResId?.let { msgResId ->
+            ErrorDialog(
+                msgResId = msgResId,
+                onDialogDismiss = onDialogDismiss,
+            )
+        }
         if (loading) {
             CircularProgressIndicator(
                 modifier = Modifier
@@ -313,6 +319,41 @@ private fun StockDetailDialog(
                 Text(text = stringResource(R.string.pe_ratio_format, stockDetailUiModel.peRatio))
                 Text(text = stringResource(R.string.dividend_yield_format, stockDetailUiModel.dividendYield))
 
+                Button(onClick = onDialogDismiss) {
+                    Text(
+                        modifier = Modifier
+                            .width(100.dp)
+                            .clip(CircleShape),
+                        text = stringResource(R.string.confirm),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ErrorDialog(
+    @StringRes msgResId: Int,
+    onDialogDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier) {
+        BasicAlertDialog(
+            onDismissRequest = onDialogDismiss,
+        ) {
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = CenterHorizontally,
+            ) {
+                Text(text = stringResource(R.string.notice))
+                Text(text = stringResource(msgResId))
                 Button(onClick = onDialogDismiss) {
                     Text(
                         modifier = Modifier

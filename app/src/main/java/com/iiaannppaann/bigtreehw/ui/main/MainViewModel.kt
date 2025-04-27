@@ -3,6 +3,7 @@ package com.iiaannppaann.bigtreehw.ui.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iiaannppaann.bigtreehw.R
 import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
 import com.iiaannppaann.bigtreehw.domain.main.repo.StockInfoRepo
 import com.iiaannppaann.bigtreehw.ui.main.model.toUiModel
@@ -23,7 +24,8 @@ class MainViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        _uiState.update { it.copy(loading = false) }
+        val currentDialog = MainDialog.ErrorDialog(msgResId = R.string.network_error)
+        _uiState.update { it.copy(loading = false, currentDialog = currentDialog) }
         Log.d("MainViewModel", "Error occurred in ViewModel:$exception")
     }
 
@@ -81,8 +83,10 @@ class MainViewModel @Inject constructor(
             _uiState.update { it.copy(loading = true) }
             val stockDetailUiModel = stockInfoRepo.getStockDetailInfoDomainData(stockId)?.toUiModel()
             if (stockDetailUiModel == null) {
-                // TODO: show error dialog
-                _uiState.update { it.copy(loading = false) }
+                _uiState.update {
+                    val currentDialog = MainDialog.ErrorDialog(msgResId = R.string.no_stock_info)
+                    it.copy(currentDialog = currentDialog, loading = false)
+                }
                 return@launch
             }
 

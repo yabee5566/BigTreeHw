@@ -1,5 +1,6 @@
 package com.iiaannppaann.bigtreehw.ui.main
 
+import androidx.annotation.StringRes
 import com.iiaannppaann.bigtreehw.ui.main.model.StockDetailUiModel
 import com.iiaannppaann.bigtreehw.ui.main.model.StockListItemUiModel
 import kotlinx.collections.immutable.ImmutableList
@@ -17,7 +18,10 @@ sealed interface MainDialog {
     data class StockDetailDialog(
         val stockDetailUiModel: StockDetailUiModel
     ) : MainDialog
-    // TODO: can add error dialog
+
+    data class ErrorDialog(
+        @StringRes val msgResId: Int
+    ) : MainDialog
 }
 
 sealed interface MainUiAction {
@@ -26,6 +30,7 @@ sealed interface MainUiAction {
     data class OnStockItemClick(
         val stockId: String
     ) : MainUiAction
+
     data class OnSortOrderItemClick(
         val isAscOrder: Boolean
     ) : MainUiAction
