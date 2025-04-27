@@ -73,10 +73,7 @@ private fun MainScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(
-                items = stockList,
-                key = { it.stockId },
-            ) { item ->
+            items(items = stockList, key = { it.stockId }) { item ->
                 StockItem(uiModel = item)
             }
         }
@@ -95,41 +92,33 @@ private fun MainScreen(
                 onDismissRequest = onDialogDismiss,
             ) {
                 Text(
-                    modifier =
-                        Modifier
-                            .clickable {
-                                coroutineScope
-                                    .launch {
-                                        bottomSheetState.hide()
-                                    }.invokeOnCompletion {
-                                        onDialogDismiss()
-                                    }
-                                onStockSortOrderClick(false)
-                            }.fillMaxWidth()
-                            .padding(16.dp),
+                    modifier = Modifier
+                        .clickable {
+                            coroutineScope
+                                .launch { bottomSheetState.hide() }
+                                .invokeOnCompletion { onDialogDismiss() }
+                            onStockSortOrderClick(false)
+                        }.fillMaxWidth()
+                        .padding(16.dp),
                     text = stringResource(R.string.stock_sort_with_desc_order),
                     textAlign = TextAlign.Center,
                 )
                 Spacer(
                     modifier =
-                        Modifier
-                            .padding(horizontal = 16.dp)
-                            .height(2.dp)
-                            .fillMaxWidth(),
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .height(2.dp)
+                        .fillMaxWidth(),
                 )
                 Text(
-                    modifier =
-                        Modifier
-                            .clickable {
-                                coroutineScope
-                                    .launch {
-                                        bottomSheetState.hide()
-                                    }.invokeOnCompletion {
-                                        onDialogDismiss()
-                                    }
-                                onStockSortOrderClick(true)
-                            }.fillMaxWidth()
-                            .padding(16.dp),
+                    modifier = Modifier
+                        .clickable {
+                            coroutineScope
+                                .launch { bottomSheetState.hide() }
+                                .invokeOnCompletion { onDialogDismiss() }
+                            onStockSortOrderClick(true)
+                        }.fillMaxWidth()
+                        .padding(16.dp),
                     text = stringResource(R.string.stock_sort_with_asc_order),
                     textAlign = TextAlign.Center,
                 )
@@ -286,19 +275,19 @@ private fun StockItemCenterBlockPreview() {
 private fun StockItemPreview() {
     StockItem(
         uiModel =
-            StockListItemUiModel(
-                stockId = "2330",
-                stockName = "台積電",
-                openingPrice = 1f,
-                closingPrice = 2f,
-                highPrice = 3f,
-                lowPrice = 4f,
-                priceChange = 5f,
-                avgMonthlyPrice = 6f,
-                tradeCount = 7f,
-                volume = 8f,
-                totalValueTraded = 9f,
-            ),
+        StockListItemUiModel(
+            stockId = "2330",
+            stockName = "台積電",
+            openingPrice = 1f,
+            closingPrice = 2f,
+            highPrice = 3f,
+            lowPrice = 4f,
+            priceChange = 5f,
+            avgMonthlyPrice = 6f,
+            tradeCount = 7f,
+            volume = 8f,
+            totalValueTraded = 9f,
+        ),
     )
 }
 

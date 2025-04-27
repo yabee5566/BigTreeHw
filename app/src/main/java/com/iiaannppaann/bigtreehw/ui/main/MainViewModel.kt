@@ -7,84 +7,75 @@ import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
 import com.iiaannppaann.bigtreehw.domain.main.repo.StockInfoRepo
 import com.iiaannppaann.bigtreehw.ui.main.model.toStockListItemUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel
-    @Inject
-    constructor(
-        private val stockInfoRepo: StockInfoRepo,
-    ) : ViewModel() {
-        private val _uiState = MutableStateFlow(MainUiState())
-        val uiState = _uiState.asStateFlow()
+class MainViewModel @Inject constructor(
+    private val stockInfoRepo: StockInfoRepo,
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(MainUiState())
+    val uiState = _uiState.asStateFlow()
 
-        private val exceptionHandler =
-            CoroutineExceptionHandler { _, exception ->
-                Log.d("MainViewModel", "Error occurred in ViewModel:$exception")
-            }
-
-        init {
-            viewModelScope.launch(exceptionHandler) {
-                val stockListItemUiModelList =
-                    stockInfoRepo
-                        .getStockInfoDomainModelList()
-                        .map(StockListItemDomainModel::toStockListItemUiModel)
-                        .toPersistentList()
-                _uiState.value =
-                    _uiState.value.copy(
-                        stockListItemUiModelList = stockListItemUiModelList,
-                    )
-            }
+    private val exceptionHandler =
+        CoroutineExceptionHandler { _, exception ->
+            Log.d("MainViewModel", "Error occurred in ViewModel:$exception")
         }
 
-        fun onUiAction(action: MainUiAction) {
-            Log.d("MainViewModel", "onUiAction: $action")
-            when (action) {
-                MainUiAction.OnBurgerClick -> onTopBurgerClick()
-                MainUiAction.OnDialogDismiss -> onDialogDismiss()
-                is MainUiAction.OnSortOrderItemClick -> onSortOrderItemClick(action.isAscOrder)
-                is MainUiAction.OnStockItemClick -> onStockItemClick(action.stockId)
-            }
-        }
-
-        fun onTopBurgerClick() {
-            _uiState.value =
-                _uiState.value.copy(
-                    currentDialog = MainDialog.StockSortOrderBottomSheet,
-                )
-        }
-
-        private fun onDialogDismiss() {
-            _uiState.value = _uiState.value.copy(currentDialog = null)
-        }
-
-        private fun onSortOrderItemClick(isAscOrder: Boolean) {
-            viewModelScope.launch(exceptionHandler) {
-                if (_uiState.value.isStockListAscOrder == isAscOrder) {
-                    return@launch
-                }
-
-                val stockListItemUiModelList =
-                    stockInfoRepo
-                        .getStockInfoDomainModelList(isSortAsc = isAscOrder)
-                        .map(StockListItemDomainModel::toStockListItemUiModel)
-                        .toPersistentList()
-                _uiState.value =
-                    _uiState.value.copy(
-                        stockListItemUiModelList = stockListItemUiModelList,
-                    )
-            }
-        }
-
-        private fun onStockItemClick(stockId: String) {
-            viewModelScope.launch(exceptionHandler) {
-                // TODO: call api to get most recent data
-                // TODO: show stock detail dialog
-            }
+    init {
+        viewModelScope.launch(exceptionHandler) {
+            val stockListItemUiModelList = stockInfoRepo
+                .getStockInfoDomainModelList()
+                .map(StockListItemDomainModel::toStockListItemUiModel)
+                .toPersistentList()
+            _uiState.update { it.copy(stockListItemUiModelList = stockListItemUiModelList) }
         }
     }
+
+    fun onUiAction(action: MainUiAction) {
+        Log.d("MainViewModel", "onUiAction: $action")
+        when (action) {
+            MainUiAction.OnBurgerClick -> onTopBurgerClick()
+            MainUiAction.OnDialogDismiss -> onDialogDismiss()
+            is MainUiAction.OnSortOrderItemClick -> onSortOrderItemClick(action.isAscOrder)
+            is MainUiAction.OnStockItemClick -> onStockItemClick(action.stockId)
+        }
+    }
+
+    fun onTopBurgerClick() {
+        _uiState.value = _uiState.value.copy(
+            currentDialog = MainDialog.StockSortOrderBottomSheet,
+        )
+    }
+
+    private fun onDialogDismiss() {
+        _uiState.value = _uiState.value.copy(currentDialog = null)
+    }
+
+    private fun onSortOrderItemClick(isAscOrder: Boolean) {
+        viewModelScope.launch(exceptionHandler) {
+            if (_uiState.value.isStockListAscOrder == isAscOrder) {
+                return@launch
+            }
+
+            val stockListItemUiModelList = stockInfoRepo
+                .getStockInfoDomainModelList(isSortAsc = isAscOrder)
+                .map(StockListItemDomainModel::toStockListItemUiModel)
+                .toPersistentList()
+            _uiState.value = _uiState.value.copy(
+                stockListItemUiModelList = stockListItemUiModelList,
+            )
+        }
+    }
+
+    private fun onStockItemClick(stockId: String) {
+        viewModelScope.launch(exceptionHandler) {
+            // TODO: call api to get most recent data
+            // TODO: show stock detail dialog
+        }
+    }
+}

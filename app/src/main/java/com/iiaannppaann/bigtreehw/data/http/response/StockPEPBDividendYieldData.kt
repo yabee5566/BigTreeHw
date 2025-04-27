@@ -12,9 +12,9 @@ data class StockPEPBDividendYieldData(
     @Json(name = "Name")
     val name: String,
     @Json(name = "PEratio")
-    val peRatio: Float,
+    val peRatio: Float, // 本益比
     @Json(name = "DividendYield")
-    val dividendYield: Float,
+    val dividendYield: Float, // 殖利率(%)
     @Json(name = "PBratio")
-    val pbRatio: String,
+    val pbRatio: String, // 股價淨值比
 )
