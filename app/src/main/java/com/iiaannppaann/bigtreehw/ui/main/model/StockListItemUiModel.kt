@@ -17,7 +17,7 @@ data class StockListItemUiModel(
     val totalValueTraded: Float,
 )
 
-fun StockListItemDomainModel.toStockListItemUiModel(): StockListItemUiModel =
+fun StockListItemDomainModel.toUiModel(): StockListItemUiModel =
     StockListItemUiModel(
         stockId = stockId,
         stockName = stockName,

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
 import com.iiaannppaann.bigtreehw.domain.main.repo.StockInfoRepo
-import com.iiaannppaann.bigtreehw.ui.main.model.toStockListItemUiModel
+import com.iiaannppaann.bigtreehw.ui.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toPersistentList
@@ -31,7 +31,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             val stockListItemUiModelList = stockInfoRepo
                 .getStockInfoDomainModelList()
-                .map(StockListItemDomainModel::toStockListItemUiModel)
+                .map(StockListItemDomainModel::toUiModel)
                 .toPersistentList()
             _uiState.update { it.copy(stockListItemUiModelList = stockListItemUiModelList) }
         }
@@ -65,7 +65,7 @@ class MainViewModel @Inject constructor(
             _uiState.update { it.copy(loading = true) }
             val stockListItemUiModelList = stockInfoRepo
                 .getStockInfoDomainModelList(isSortAsc = isAscOrder)
-                .map(StockListItemDomainModel::toStockListItemUiModel)
+                .map(StockListItemDomainModel::toUiModel)
                 .toPersistentList()
             _uiState.update {
                 it.copy(
@@ -78,8 +78,20 @@ class MainViewModel @Inject constructor(
 
     private fun onStockItemClick(stockId: String) {
         viewModelScope.launch(exceptionHandler) {
-            // TODO: call api to get most recent data
-            // TODO: show stock detail dialog
+            _uiState.update { it.copy(loading = true) }
+            val stockDetailUiModel = stockInfoRepo.getStockDetailInfoDomainData(stockId)?.toUiModel()
+            if (stockDetailUiModel == null) {
+                // TODO: show error dialog
+                _uiState.update { it.copy(loading = false) }
+                return@launch
+            }
+
+            _uiState.update {
+                it.copy(
+                    currentDialog = MainDialog.StockDetailDialog(stockDetailUiModel = stockDetailUiModel),
+                    loading = false
+                )
+            }
         }
     }
 }

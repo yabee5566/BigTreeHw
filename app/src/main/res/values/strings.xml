@@ -5,4 +5,8 @@
     <string name="top_bar_title">大樹證券</string>
     <string name="stock_sort_with_desc_order"><![CDATA[股票代號大->小]]></string>
     <string name="stock_sort_with_asc_order"><![CDATA[股票代號小->大]]></string>
+    <string name="confirm">確認</string>
+    <string name="pe_ratio_format">本益比: %s</string>
+    <string name="pb_ratio_format">股價淨值比: %s</string>
+    <string name="dividend_yield_format">殖利率: %s</string>
 </resources>
