@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
             _uiState
                 .map { it.isStockListAscOrder }
                 .distinctUntilChanged()
-                .onStart { stockInfoRepo.invalidateStockInfoListCache() }
+                .onStart { onPullRefresh() }
                 .flatMapLatest { it ->
                     stockInfoRepo
                         .observeStockInfoMap()
@@ -105,12 +105,12 @@ class MainViewModel @Inject constructor(
 
     private fun onPullRefresh() {
         viewModelScope.launch(CoroutineExceptionHandler { _, exception ->
-            _uiState.update { it.copy(isRefreshing = false) }
+            _uiState.update { it.copy(refreshState = RefreshState.NotRefreshing) }
             Log.d("MainViewModel", "Error occurred in ViewModel:$exception")
         }) {
-            _uiState.update { it.copy(isRefreshing = true) }
+            _uiState.update { it.copy(refreshState = RefreshState.Refreshing) }
             stockInfoRepo.invalidateStockInfoListCache()
-            _uiState.update { it.copy(isRefreshing = false) }
+            _uiState.update { it.copy(refreshState = RefreshState.NotRefreshing) }
         }
     }
 }

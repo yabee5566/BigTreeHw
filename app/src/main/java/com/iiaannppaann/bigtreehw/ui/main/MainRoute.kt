@@ -67,7 +67,7 @@ fun MainRoute(
         stockList = uiState.stockListItemUiModelList,
         currentDialog = uiState.currentDialog,
         loading = uiState.loading,
-        isRefreshing = uiState.isRefreshing,
+        refreshState = uiState.refreshState,
         onStockItemClick = { stockId ->
             onAction(MainUiAction.OnStockItemClick(stockId = stockId))
         },
@@ -89,7 +89,7 @@ private fun MainScreen(
     currentDialog: MainDialog?,
     stockList: ImmutableList<StockListItemUiModel>,
     loading: Boolean,
-    isRefreshing: Boolean,
+    refreshState: RefreshState,
     onStockItemClick: (stockId: String) -> Unit,
     onStockSortOrderClick: (isAscOrder: Boolean) -> Unit,
     onDialogDismiss: () -> Unit,
@@ -98,7 +98,7 @@ private fun MainScreen(
 ) {
     Box(modifier = modifier) {
         val pullRefreshState = rememberPullRefreshState(
-            refreshing = isRefreshing,
+            refreshing = (refreshState == RefreshState.Refreshing),
             onRefresh = onOnPullRefresh,
         )
         LazyColumn(
@@ -108,7 +108,7 @@ private fun MainScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (stockList.isEmpty() && !isRefreshing) {
+            if (stockList.isEmpty() && refreshState == RefreshState.NotRefreshing) {
                 item {
                     Text(
                         modifier = Modifier.fillParentMaxSize(),
@@ -128,7 +128,7 @@ private fun MainScreen(
         }
         PullRefreshIndicator(
             modifier = Modifier.align(Alignment.TopCenter),
-            refreshing = isRefreshing,
+            refreshing = (refreshState == RefreshState.Refreshing),
             state = pullRefreshState
         )
         StockSortOrderBottomSheet(
@@ -485,7 +485,7 @@ private fun MainScreenPreview() {
     MainScreen(
         stockList = dummyStockList,
         loading = false,
-        isRefreshing = false,
+        refreshState = RefreshState.NotRefreshing,
         currentDialog = null,
         onStockItemClick = {},
         onStockSortOrderClick = {},

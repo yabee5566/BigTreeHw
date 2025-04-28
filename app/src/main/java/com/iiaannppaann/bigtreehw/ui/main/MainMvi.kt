@@ -8,7 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class MainUiState(
     val loading: Boolean = false,
-    val isRefreshing: Boolean = false,
+    val refreshState: RefreshState = RefreshState.Initial,
     val isStockListAscOrder: Boolean = true,
     val stockListItemUiModelList: ImmutableList<StockListItemUiModel> = persistentListOf(),
     val currentDialog: MainDialog? = null,
@@ -38,3 +38,5 @@ sealed interface MainUiAction {
 
     data object OnPullRefresh : MainUiAction
 }
+
+enum class RefreshState { Initial, Refreshing, NotRefreshing }
