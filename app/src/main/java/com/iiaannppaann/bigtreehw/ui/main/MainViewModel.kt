@@ -64,6 +64,7 @@ class MainViewModel @Inject constructor(
             MainUiAction.OnDialogDismiss -> onDialogDismiss()
             is MainUiAction.OnSortOrderItemClick -> onSortOrderItemClick(action.isAscOrder)
             is MainUiAction.OnStockItemClick -> onStockItemClick(action.stockId)
+            MainUiAction.OnPullRefresh -> onPullRefresh()
         }
     }
 
@@ -99,6 +100,17 @@ class MainViewModel @Inject constructor(
                     loading = false
                 )
             }
+        }
+    }
+
+    private fun onPullRefresh() {
+        viewModelScope.launch(CoroutineExceptionHandler { _, exception ->
+            _uiState.update { it.copy(isRefreshing = false) }
+            Log.d("MainViewModel", "Error occurred in ViewModel:$exception")
+        }) {
+            _uiState.update { it.copy(isRefreshing = true) }
+            stockInfoRepo.invalidateStockInfoListCache()
+            _uiState.update { it.copy(isRefreshing = false) }
         }
     }
 }

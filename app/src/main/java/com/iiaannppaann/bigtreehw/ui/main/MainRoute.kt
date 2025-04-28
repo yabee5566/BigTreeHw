@@ -21,6 +21,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -32,6 +36,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -60,6 +65,7 @@ fun MainRoute(
         stockList = uiState.stockListItemUiModelList,
         currentDialog = uiState.currentDialog,
         loading = uiState.loading,
+        isRefreshing = uiState.isRefreshing,
         onStockItemClick = { stockId ->
             onAction(MainUiAction.OnStockItemClick(stockId = stockId))
         },
@@ -69,25 +75,45 @@ fun MainRoute(
         onStockSortOrderClick = { isAscOrder ->
             onAction(MainUiAction.OnSortOrderItemClick(isAscOrder = isAscOrder))
         },
+        onOnPullRefresh = {
+            onAction(MainUiAction.OnPullRefresh)
+        }
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreen(
     currentDialog: MainDialog?,
     stockList: ImmutableList<StockListItemUiModel>,
     loading: Boolean,
+    isRefreshing: Boolean,
     onStockItemClick: (stockId: String) -> Unit,
     onStockSortOrderClick: (isAscOrder: Boolean) -> Unit,
     onDialogDismiss: () -> Unit,
+    onOnPullRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
+        val pullRefreshState = rememberPullRefreshState(
+            refreshing = isRefreshing,
+            onRefresh = onOnPullRefresh,
+        )
         LazyColumn(
-            modifier = Modifier.background(Color.White),
+            modifier = Modifier
+                .background(Color.White)
+                .pullRefresh(pullRefreshState),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            if (stockList.isEmpty() && !isRefreshing) {
+                item {
+                    Text(
+                        modifier = Modifier.fillParentMaxSize(),
+                        text = "這裡什麼也沒有"
+                    )
+                }
+            }
             items(items = stockList, key = { it.stockId }) { item ->
                 StockItem(
                     modifier = Modifier.clickable {
@@ -97,6 +123,11 @@ private fun MainScreen(
                 )
             }
         }
+        PullRefreshIndicator(
+            modifier = Modifier.align(Alignment.TopCenter),
+            refreshing = isRefreshing,
+            state = pullRefreshState
+        )
         StockSortOrderBottomSheet(
             isVisible = currentDialog is MainDialog.StockSortOrderBottomSheet,
             onStockSortOrderClick = onStockSortOrderClick,
@@ -438,9 +469,11 @@ private fun MainScreenPreview() {
     MainScreen(
         stockList = dummyStockList,
         loading = false,
+        isRefreshing = false,
         currentDialog = null,
         onStockItemClick = {},
         onStockSortOrderClick = {},
         onDialogDismiss = {},
+        onOnPullRefresh = {},
     )
 }

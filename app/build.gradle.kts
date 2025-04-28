@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -62,6 +61,7 @@ dependencies {
     implementation(libs.moshi.converter)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
