@@ -2,6 +2,7 @@ package com.iiaannppaann.bigtreehw.ui.main.model
 
 import androidx.compose.ui.graphics.Color
 import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
+import com.iiaannppaann.bigtreehw.ui.theme.DarkGreen
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
 
@@ -116,7 +117,7 @@ class StockListItemUiModeTest {
             avgMonthlyPrice = 200.0f
         ).toUiModel()
             .let {
-            assertEquals(Color.Green, it.closingPriceColor)
+            assertEquals(DarkGreen, it.closingPriceColor)
         }
         domainModel
             .copy(
@@ -139,7 +140,7 @@ class StockListItemUiModeTest {
             priceChange = -10.0f
         ).toUiModel()
             .let {
-            assertEquals(Color.Green, it.priceChangeColor)
+            assertEquals(DarkGreen, it.priceChangeColor)
         }
         domainModel
             .copy(

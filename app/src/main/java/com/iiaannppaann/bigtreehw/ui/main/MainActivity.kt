@@ -19,9 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iiaannppaann.bigtreehw.R
 import com.iiaannppaann.bigtreehw.ui.theme.BigTreeHwTheme
+import com.iiaannppaann.bigtreehw.ui.theme.BigTreeOrange
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,9 +43,9 @@ class MainActivity : ComponentActivity() {
                     val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
                     MainRoute(
                         modifier =
-                            Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize(),
+                        Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize(),
                         uiState = uiState,
                         onAction = mainViewModel::onUiAction,
                     )
@@ -60,7 +63,14 @@ private fun BigTreeTopBar(
 ) {
     TopAppBar(
         modifier = modifier,
-        title = { Text(text = stringResource(R.string.top_bar_title)) },
+        title = {
+            Text(
+                text = stringResource(R.string.top_bar_title),
+                fontSize = 20.sp,
+                color = BigTreeOrange,
+                fontWeight = FontWeight.Bold
+            )
+        },
         actions = {
             IconButton(onClick = onBurgerClick) {
                 Image(

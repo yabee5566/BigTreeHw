@@ -44,9 +44,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.iiaannppaann.bigtreehw.R
 import com.iiaannppaann.bigtreehw.ui.main.model.StockDetailUiModel
 import com.iiaannppaann.bigtreehw.ui.main.model.StockListItemUiModel
@@ -104,7 +106,7 @@ private fun MainScreen(
                 .background(Color.White)
                 .pullRefresh(pullRefreshState),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (stockList.isEmpty() && !isRefreshing) {
                 item {
@@ -163,11 +165,18 @@ private fun StockItem(
 ) {
     Card(
         modifier = modifier,
-        border = BorderStroke(width = 1.dp, color = Color.Black),
+        border = BorderStroke(width = 1.dp, color = Color.Gray),
     ) {
         Column(Modifier.padding(16.dp)) {
-            Text(text = uiModel.stockId)
-            Text(text = uiModel.stockName)
+            Text(
+                text = stringResource(
+                    R.string.stock_name_and_id_format,
+                    uiModel.stockName, uiModel.stockId,
+                ),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             StockItemCenterBlock(
                 modifier = Modifier.fillMaxWidth(),
                 openingPrice = uiModel.openingPrice,
@@ -339,10 +348,13 @@ private fun StockDetailDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = CenterHorizontally,
             ) {
-                Text(text = stringResource(R.string.stock_name_and_id_format,
-                    stockDetailUiModel.stockName,
-                    stockDetailUiModel.stockId,
-                ))
+                Text(
+                    text = stringResource(
+                        R.string.stock_name_and_id_format,
+                        stockDetailUiModel.stockName,
+                        stockDetailUiModel.stockId,
+                    )
+                )
                 Text(text = stringResource(R.string.pb_ratio_format, stockDetailUiModel.pbRatio))
                 Text(text = stringResource(R.string.pe_ratio_format, stockDetailUiModel.peRatio))
                 Text(text = stringResource(R.string.dividend_yield_format, stockDetailUiModel.dividendYield))

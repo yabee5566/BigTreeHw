@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.iiaannppaann.bigtreehw.core.util.toFormattedString
 import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
 import com.iiaannppaann.bigtreehw.ui.main.model.StockListItemUiModel.Companion.NO_DATA_DISPLAY_TEXT
+import com.iiaannppaann.bigtreehw.ui.theme.DarkGreen
 import java.util.Locale
 
 data class StockListItemUiModel(
@@ -42,13 +43,13 @@ fun StockListItemDomainModel.toUiModel(): StockListItemUiModel =
         closingPriceColor = when {
             (closingPrice == null || avgMonthlyPrice == null) -> Color.Gray
             closingPrice > avgMonthlyPrice -> Color.Red
-            closingPrice < avgMonthlyPrice -> Color.Green
+            closingPrice < avgMonthlyPrice -> DarkGreen
             else -> Color.Gray
         },
         priceChangeColor = when {
             priceChange == null -> Color.Gray
             priceChange > 0 -> Color.Red
-            priceChange < 0 -> Color.Green
+            priceChange < 0 -> DarkGreen
             else -> Color.Gray
         },
     )
@@ -67,4 +68,3 @@ fun Long.toFormattedString(): String =
             this.toString()
         }
     }
-
