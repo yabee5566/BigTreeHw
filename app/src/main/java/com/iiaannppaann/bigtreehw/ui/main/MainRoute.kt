@@ -110,7 +110,8 @@ private fun MainScreen(
                 item {
                     Text(
                         modifier = Modifier.fillParentMaxSize(),
-                        text = "這裡什麼也沒有"
+                        text = "這裡什麼也沒有",
+                        textAlign = TextAlign.Center
                     )
                 }
             }

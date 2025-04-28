@@ -85,7 +85,7 @@ class MainViewModel @Inject constructor(
     private fun onStockItemClick(stockId: String) {
         viewModelScope.launch(exceptionHandler) {
             _uiState.update { it.copy(loading = true) }
-            val stockDetailUiModel = stockInfoRepo.getStockDetailInfo(stockId)?.toUiModel()
+            val stockDetailUiModel = stockInfoRepo.fetchStockDetailInfoDomainData(stockId = stockId)?.toUiModel()
             if (stockDetailUiModel == null) {
                 _uiState.update {
                     val currentDialog = MainDialog.ErrorDialog(msgResId = R.string.no_stock_info)

@@ -16,17 +16,17 @@ import kotlinx.coroutines.flow.asStateFlow
 
 interface StockInfoRepo {
     suspend fun invalidateStockInfoListCache()
-    suspend fun observeStockInfoMap(): Flow<Map<String, StockListItemDomainModel>>
+    fun observeStockInfoMap(): Flow<Map<String, StockListItemDomainModel>>
     suspend fun invalidateStockDetailInfoCache()
-    suspend fun getStockDetailInfo(stockId: String): StockDetailInfoDomainData?
+    suspend fun fetchStockDetailInfoDomainData(stockId: String): StockDetailInfoDomainData?
 }
 
 @Singleton
 class StockInfoRepoImpl @Inject constructor(
     private val exchangeReportApi: ExchangeReportApi,
 ) : StockInfoRepo {
-    private val stockListItemDomainModelMap = mutableMapOf<String, StockListItemDomainModel>()
     private val stockListItemMapFlow = MutableStateFlow<Map<String, StockListItemDomainModel>>(emptyMap())
+    private val stockDetailInfoMap = MutableStateFlow<Map<String, StockDetailInfoDomainData>>(emptyMap())
 
     override suspend fun invalidateStockInfoListCache() {
         coroutineScope {
@@ -53,15 +53,23 @@ class StockInfoRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun observeStockInfoMap(): Flow<Map<String, StockListItemDomainModel>> =
+    override fun observeStockInfoMap(): Flow<Map<String, StockListItemDomainModel>> =
         stockListItemMapFlow.asStateFlow()
 
     override suspend fun invalidateStockDetailInfoCache() {
-        TODO("Not yet implemented")
+        val stockDetailInfoDomainDataMap = exchangeReportApi
+            .getAllStockPEPBAndDividendYield()
+            .associateBy { it.code }
+            .mapValues { it.value.toDomainModel() }
+        stockDetailInfoMap.value = stockDetailInfoDomainDataMap
     }
 
-    override suspend fun getStockDetailInfo(stockId: String): StockDetailInfoDomainData? = exchangeReportApi
-            .getAllStockPEPBAndDividendYield()
-            .firstOrNull { it.code == stockId }
-            ?.toDomainModel()
+    override suspend fun fetchStockDetailInfoDomainData(stockId: String): StockDetailInfoDomainData? {
+        val stockDetailInfo = stockDetailInfoMap.value[stockId]
+        if (stockDetailInfo == null) {
+            invalidateStockDetailInfoCache()
+            return stockDetailInfoMap.value[stockId]
+        }
+        return stockDetailInfo
+    }
 }
