@@ -13,6 +13,11 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -31,11 +36,24 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(exceptionHandler) {
-            val stockListItemUiModelList = stockInfoRepo
-                .getStockInfoDomainModelList()
-                .map(StockListItemDomainModel::toUiModel)
-                .toPersistentList()
-            _uiState.update { it.copy(stockListItemUiModelList = stockListItemUiModelList) }
+            _uiState
+                .map { it.isStockListAscOrder }
+                .distinctUntilChanged()
+                .onStart { stockInfoRepo.invalidateStockInfoListCache() }
+                .flatMapLatest { it ->
+                    stockInfoRepo
+                        .observeStockInfoMap()
+                        .map { it.values.map(StockListItemDomainModel::toUiModel) }
+                        .map {
+                            if (_uiState.value.isStockListAscOrder) {
+                                it.sortedBy { it.stockId }
+                            } else {
+                                it.sortedByDescending { it.stockId }
+                            }.toPersistentList()
+                        }
+                }.collectLatest { stockListItemUiModelList ->
+                    _uiState.update { it.copy(stockListItemUiModelList = stockListItemUiModelList) }
+                }
         }
     }
 
@@ -60,28 +78,13 @@ class MainViewModel @Inject constructor(
     }
 
     private fun onSortOrderItemClick(isAscOrder: Boolean) {
-        viewModelScope.launch(exceptionHandler) {
-            if (_uiState.value.isStockListAscOrder == isAscOrder) {
-                return@launch
-            }
-            _uiState.update { it.copy(loading = true) }
-            val stockListItemUiModelList = stockInfoRepo
-                .getStockInfoDomainModelList(isSortAsc = isAscOrder)
-                .map(StockListItemDomainModel::toUiModel)
-                .toPersistentList()
-            _uiState.update {
-                it.copy(
-                    stockListItemUiModelList = stockListItemUiModelList,
-                    loading = false
-                )
-            }
-        }
+        _uiState.update { it.copy(isStockListAscOrder = isAscOrder) }
     }
 
     private fun onStockItemClick(stockId: String) {
         viewModelScope.launch(exceptionHandler) {
             _uiState.update { it.copy(loading = true) }
-            val stockDetailUiModel = stockInfoRepo.getStockDetailInfoDomainData(stockId)?.toUiModel()
+            val stockDetailUiModel = stockInfoRepo.getStockDetailInfo(stockId)?.toUiModel()
             if (stockDetailUiModel == null) {
                 _uiState.update {
                     val currentDialog = MainDialog.ErrorDialog(msgResId = R.string.no_stock_info)

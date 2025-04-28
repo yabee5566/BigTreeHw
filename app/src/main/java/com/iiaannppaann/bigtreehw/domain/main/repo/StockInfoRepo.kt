@@ -10,21 +10,27 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 interface StockInfoRepo {
-    suspend fun getStockInfoDomainModelList(isSortAsc: Boolean = true): List<StockListItemDomainModel>
-    suspend fun getStockDetailInfoDomainData(stockId: String): StockDetailInfoDomainData?
+    suspend fun invalidateStockInfoListCache()
+    suspend fun observeStockInfoMap(): Flow<Map<String, StockListItemDomainModel>>
+    suspend fun invalidateStockDetailInfoCache()
+    suspend fun getStockDetailInfo(stockId: String): StockDetailInfoDomainData?
 }
 
 @Singleton
 class StockInfoRepoImpl @Inject constructor(
     private val exchangeReportApi: ExchangeReportApi,
 ) : StockInfoRepo {
-    val stockListItemDomainModelMap = mutableMapOf<String, StockListItemDomainModel>()
+    private val stockListItemDomainModelMap = mutableMapOf<String, StockListItemDomainModel>()
+    private val stockListItemMapFlow = MutableStateFlow<Map<String, StockListItemDomainModel>>(emptyMap())
 
-    override suspend fun getStockInfoDomainModelList(isSortAsc: Boolean): List<StockListItemDomainModel> {
-        // TODO: if error or null, use cache
-        return coroutineScope {
+    override suspend fun invalidateStockInfoListCache() {
+        coroutineScope {
+            val stockListItemDomainModelMap = mutableMapOf<String, StockListItemDomainModel>()
             val dayTradeInfoDataListDeferred = async {
                 exchangeReportApi.getAllStockDayTradeInfo()
             }
@@ -43,15 +49,18 @@ class StockInfoRepoImpl @Inject constructor(
                     stockListItemDomainModelMap[data.code]?.update(data)
                         ?: data.toStockListItemDomainModel()
             }
-            if (isSortAsc) {
-                stockListItemDomainModelMap.values.sortedBy { it.stockId }.toList()
-            } else {
-                stockListItemDomainModelMap.values.sortedByDescending { it.stockId }.toList()
-            }
+            stockListItemMapFlow.value = stockListItemDomainModelMap
         }
     }
 
-    override suspend fun getStockDetailInfoDomainData(stockId: String): StockDetailInfoDomainData? = exchangeReportApi
+    override suspend fun observeStockInfoMap(): Flow<Map<String, StockListItemDomainModel>> =
+        stockListItemMapFlow.asStateFlow()
+
+    override suspend fun invalidateStockDetailInfoCache() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getStockDetailInfo(stockId: String): StockDetailInfoDomainData? = exchangeReportApi
             .getAllStockPEPBAndDividendYield()
             .firstOrNull { it.code == stockId }
             ?.toDomainModel()
