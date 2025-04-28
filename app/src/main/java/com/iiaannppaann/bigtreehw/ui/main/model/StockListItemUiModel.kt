@@ -1,6 +1,7 @@
 package com.iiaannppaann.bigtreehw.ui.main.model
 
 import androidx.compose.ui.graphics.Color
+import com.iiaannppaann.bigtreehw.core.util.toFormattedString
 import com.iiaannppaann.bigtreehw.domain.main.model.StockListItemDomainModel
 import com.iiaannppaann.bigtreehw.ui.main.model.StockListItemUiModel.Companion.NO_DATA_DISPLAY_TEXT
 import java.util.Locale
@@ -67,4 +68,3 @@ fun Long.toFormattedString(): String =
         }
     }
 
-fun Float.toFormattedString(): String = String.format(Locale.US, "%.2f", this)

@@ -6,9 +6,10 @@
     <string name="stock_sort_with_desc_order"><![CDATA[股票代號大->小]]></string>
     <string name="stock_sort_with_asc_order"><![CDATA[股票代號小->大]]></string>
     <string name="confirm">確認</string>
+    <string name="stock_name_and_id_format">%1$s (%2$s)</string>
     <string name="pe_ratio_format">本益比: %s</string>
     <string name="pb_ratio_format">股價淨值比: %s</string>
-    <string name="dividend_yield_format">殖利率: %s</string>
+    <string name="dividend_yield_format">殖利率: %s%%</string>
     <string name="no_stock_info">查無此股票資訊</string>
     <string name="notice">提示</string>
     <string name="network_error">網路不通，請稍後再試試</string>

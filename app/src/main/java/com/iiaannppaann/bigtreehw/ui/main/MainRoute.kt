@@ -339,7 +339,10 @@ private fun StockDetailDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = CenterHorizontally,
             ) {
-                Text(text = "${stockDetailUiModel.stockName} (${stockDetailUiModel.stockId})")
+                Text(text = stringResource(R.string.stock_name_and_id_format,
+                    stockDetailUiModel.stockName,
+                    stockDetailUiModel.stockId,
+                ))
                 Text(text = stringResource(R.string.pb_ratio_format, stockDetailUiModel.pbRatio))
                 Text(text = stringResource(R.string.pe_ratio_format, stockDetailUiModel.peRatio))
                 Text(text = stringResource(R.string.dividend_yield_format, stockDetailUiModel.dividendYield))
